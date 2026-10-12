@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR codes</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <header class="site-header small no-print">
+    <div class="wrap">
+      <a class="back" href="index.html">← All exercises</a>
+    </div>
+  </header>
+
+  <main class="wrap wide">
+    <h1 class="no-print">QR codes for the printed book</h1>
+    <p class="no-print">Each code opens one exercise. Right-click a code (or long-press on a phone) to save it,
+      click “Download PNG”, or print this page.
+      <button type="button" onclick="print()">Print</button></p>
+    <div id="codes" class="qr-grid"><p class="notice">Loading…</p></div>
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>
+    const box = document.getElementById("codes");
+    loadData().then((data) => {
+      box.replaceChildren();
+      for (const ex of allExercises(data)) {
+        const url = exerciseUrl(ex.id);
+        const code = el("div", { class: "qr" });
+        const download = el("a", { class: "no-print", download: `qr-${ex.id}.png`, href: "#", text: "Download PNG" });
+        box.append(el("figure", { class: "qr-card" }, code,
+          el("figcaption", {},
+            el("strong", { dir: "auto", text: `${ex.unit.unit}.${ex.number} ${ex.title}` }),
+            el("span", { class: "url", text: url }),
+            download)));
+        new QRCode(code, { text: url, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M });
+        download.addEventListener("click", () => {
+          const canvas = code.querySelector("canvas");
+          if (canvas) download.href = canvas.toDataURL("image/png");
+        });
+      }
+    }).catch((err) => showError(box, err.message));
+  </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pirtûk Xorasan — Audio</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <h1 data-site-title>Audio</h1>
+      <p class="subtitle" data-site-subtitle></p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <input id="search" class="search" type="search" placeholder="Search exercises…" aria-label="Search exercises">
+    <div id="units"><p class="notice">Loading…</p></div>
+  </main>
+
+  <footer class="wrap site-footer">
+    <a href="qr.html">QR codes for printing</a>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    const unitsBox = document.getElementById("units");
+    const search = document.getElementById("search");
+
+    function render(data, query) {
+      const q = query.trim().toLowerCase();
+      const out = [];
+      for (const unit of data.units) {
+        const matches = unit.exercises.filter((ex) =>
+          !q || `${unit.title} ${ex.title} ${ex.id}`.toLowerCase().includes(q));
+        if (!matches.length) continue;
+
+        const list = el("ol", { class: "exercise-list" });
+        for (const ex of matches) {
+          list.append(el("li", {},
+            el("a", { href: "listen.html?id=" + encodeURIComponent(ex.id) },
+              el("span", { class: "ex-num", text: `${unit.unit}.${ex.number}` }),
+              el("span", { class: "ex-title", dir: "auto", text: ex.title }),
+              el("span", { class: "ex-play", "aria-hidden": "true", text: "▶" }))));
+        }
+        out.push(el("section", { class: "unit" },
+          el("h2", { dir: "auto", text: unit.title }), list));
+      }
+      unitsBox.replaceChildren(...(out.length ? out : [el("p", { class: "notice", text: "No exercises found." })]));
+    }
+
+    loadData()
+      .then((data) => {
+        setSiteTitle(data);
+        render(data, "");
+        search.addEventListener("input", () => render(data, search.value));
+      })
+      .catch((err) => showError(unitsBox, err.message));
+  </script>
+</body>
+</html>

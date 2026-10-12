@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Listening exercise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header small">
+    <div class="wrap">
+      <a class="back" href="index.html">← <span data-site-title>All exercises</span></a>
+    </div>
+  </header>
+
+  <main class="wrap" id="exercise"><p class="notice">Loading…</p></main>
+
+  <script src="js/app.js"></script>
+  <script>
+    const box = document.getElementById("exercise");
+    const id = new URLSearchParams(location.search).get("id");
+
+    // Build the player. Order of attempts:
+    //   1. Google Drive file played in the normal audio player ("drive" field)
+    //   2. if that fails: the local file ("audio" field), if there is one
+    //   3. if there is no local file: Google Drive's own embedded player
+    function buildPlayer(ex) {
+      const holder = el("div", { class: "player" });
+      const audio = el("audio", { controls: "", preload: "metadata" });
+      const fileId = driveId(ex.drive);
+      const sources = [];
+      if (fileId) sources.push(driveStreamUrl(fileId));
+      if (ex.audio) sources.push(ex.audio);
+
+      let i = 0;
+      audio.src = sources[0] || "";
+      audio.addEventListener("error", () => {
+        i++;
+        if (i < sources.length) {
+          audio.src = sources[i];
+        } else if (fileId) {
+          // Last resort: Google's embedded player always works for shared files.
+          holder.replaceChildren(el("iframe", {
+            class: "drive-frame", src: drivePreviewUrl(fileId),
+            title: "Audio player", allow: "autoplay"
+          }));
+        } else {
+          holder.replaceChildren(el("p", { class: "notice", text: "This audio file could not be loaded." }));
+        }
+      });
+
+      holder.append(audio, speedControls(audio));
+      return holder;
+    }
+
+    // Slower playback and a "back 5 seconds" button help language learners.
+    function speedControls(audio) {
+      const bar = el("div", { class: "controls" });
+      const back = el("button", { type: "button", text: "↺ 5 s", "aria-label": "Back 5 seconds" });
+      back.onclick = () => (audio.currentTime = Math.max(0, audio.currentTime - 5));
+      bar.append(back);
+      for (const rate of [0.75, 1, 1.25]) {
+        const b = el("button", { type: "button", class: rate === 1 ? "active" : "", text: rate + "×" });
+        b.onclick = () => {
+          audio.playbackRate = rate;
+          bar.querySelectorAll(".active").forEach((x) => x.classList.remove("active"));
+          b.classList.add("active");
+        };
+        bar.append(b);
+      }
+      return bar;
+    }
+
+    function render(data) {
+      const list = allExercises(data);
+      const pos = list.findIndex((ex) => ex.id === id);
+      if (pos < 0) return showError(box, `Exercise "${id ?? ""}" was not found.`);
+      const ex = list[pos];
+      document.title = `${ex.unit.unit}.${ex.number} ${ex.title}`;
+
+      const parts = [
+        el("p", { class: "eyebrow", dir: "auto", text: `${ex.unit.title} · Exercise ${ex.number}` }),
+        el("h1", { dir: "auto", text: ex.title }),
+      ];
+      if (ex.instructions) parts.push(el("p", { class: "instructions", dir: "auto", text: ex.instructions }));
+      parts.push(buildPlayer(ex));
+
+      if (ex.transcript) {
+        parts.push(el("details", { class: "transcript" },
+          el("summary", { text: "Show transcript" }),
+          el("div", { class: "transcript-text", dir: "auto", text: ex.transcript })));
+      }
+
+      const fileId = driveId(ex.drive);
+      if (fileId) {
+        parts.push(el("p", { class: "small-link" },
+          el("a", { href: driveViewUrl(fileId), target: "_blank", rel: "noopener", text: "Open in Google Drive" })));
+      }
+
+      const nav = el("nav", { class: "prev-next" });
+      const prev = list[pos - 1], next = list[pos + 1];
+      nav.append(prev ? el("a", { href: "listen.html?id=" + encodeURIComponent(prev.id), text: "← Previous" }) : el("span"));
+      nav.append(next ? el("a", { href: "listen.html?id=" + encodeURIComponent(next.id), text: "Next →" }) : el("span"));
+      parts.push(nav);
+
+      box.replaceChildren(...parts);
+    }
+
+    loadData()
+      .then((data) => { setSiteTitle(data); render(data); })
+      .catch((err) => showError(box, err.message));
+  </script>
+</body>
+</html>

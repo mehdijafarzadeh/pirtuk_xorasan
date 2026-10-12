@@ -1,0 +1,330 @@
+{
+  "site": {
+    "title": "Pirtûk Xorasan — Audio",
+    "subtitle": "Listening exercises for the textbook"
+  },
+  "units": [
+    {
+      "unit": 1,
+      "title": "Unit 1",
+      "exercises": [
+        {
+          "id": "1-1",
+          "number": 1,
+          "title": "زمان ما 1",
+          "audio": "audio/zaman-ma-01.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 2,
+      "title": "Unit 2",
+      "exercises": [
+        {
+          "id": "2-1",
+          "number": 1,
+          "title": "زمان ما 2",
+          "audio": "audio/zaman-ma-02.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 3,
+      "title": "Unit 3",
+      "exercises": [
+        {
+          "id": "3-1",
+          "number": 1,
+          "title": "زمان ما 3",
+          "audio": "audio/zaman-ma-03.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 4,
+      "title": "Unit 4",
+      "exercises": [
+        {
+          "id": "4-1",
+          "number": 1,
+          "title": "زمان ما 4",
+          "audio": "audio/zaman-ma-04.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 5,
+      "title": "Unit 5",
+      "exercises": [
+        {
+          "id": "5-1",
+          "number": 1,
+          "title": "زمان ما 5",
+          "audio": "audio/zaman-ma-05.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 6,
+      "title": "Unit 6",
+      "exercises": [
+        {
+          "id": "6-1",
+          "number": 1,
+          "title": "زمان ما 6",
+          "audio": "audio/zaman-ma-06.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 7,
+      "title": "Unit 7",
+      "exercises": [
+        {
+          "id": "7-1",
+          "number": 1,
+          "title": "زمان ما 7",
+          "audio": "audio/zaman-ma-07.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 8,
+      "title": "Unit 8",
+      "exercises": [
+        {
+          "id": "8-1",
+          "number": 1,
+          "title": "زمان ما 8",
+          "audio": "audio/zaman-ma-08.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 9,
+      "title": "Unit 9",
+      "exercises": [
+        {
+          "id": "9-1",
+          "number": 1,
+          "title": "زمان ما 9",
+          "audio": "audio/zaman-ma-09.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 10,
+      "title": "Unit 10",
+      "exercises": [
+        {
+          "id": "10-1",
+          "number": 1,
+          "title": "زمان ما 10",
+          "audio": "audio/zaman-ma-10.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 11,
+      "title": "Unit 11",
+      "exercises": [
+        {
+          "id": "11-1",
+          "number": 1,
+          "title": "زمان ما 11",
+          "audio": "audio/zaman-ma-11.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 12,
+      "title": "Unit 12",
+      "exercises": [
+        {
+          "id": "12-1",
+          "number": 1,
+          "title": "زمان ما 12",
+          "audio": "audio/zaman-ma-12.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 13,
+      "title": "Unit 13",
+      "exercises": [
+        {
+          "id": "13-1",
+          "number": 1,
+          "title": "زمان ما 13",
+          "audio": "audio/zaman-ma-13.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 14,
+      "title": "Unit 14",
+      "exercises": [
+        {
+          "id": "14-1",
+          "number": 1,
+          "title": "زمان ما 14",
+          "audio": "audio/zaman-ma-14.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 15,
+      "title": "Unit 15",
+      "exercises": [
+        {
+          "id": "15-1",
+          "number": 1,
+          "title": "زمان ما 15",
+          "audio": "audio/zaman-ma-15.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 16,
+      "title": "Unit 16",
+      "exercises": [
+        {
+          "id": "16-1",
+          "number": 1,
+          "title": "زمان ما 16",
+          "audio": "audio/zaman-ma-16.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 17,
+      "title": "Unit 17",
+      "exercises": [
+        {
+          "id": "17-1",
+          "number": 1,
+          "title": "زمان ما 17",
+          "audio": "audio/zaman-ma-17.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 18,
+      "title": "Unit 18",
+      "exercises": [
+        {
+          "id": "18-1",
+          "number": 1,
+          "title": "زمان ما 18",
+          "audio": "audio/zaman-ma-18.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 19,
+      "title": "Unit 19",
+      "exercises": [
+        {
+          "id": "19-1",
+          "number": 1,
+          "title": "زمان ما 19",
+          "audio": "audio/zaman-ma-19.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 20,
+      "title": "Unit 20",
+      "exercises": [
+        {
+          "id": "20-1",
+          "number": 1,
+          "title": "زمان ما 20",
+          "audio": "audio/zaman-ma-20.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 21,
+      "title": "Unit 21",
+      "exercises": [
+        {
+          "id": "21-1",
+          "number": 1,
+          "title": "زمان ما 21",
+          "audio": "audio/zaman-ma-21.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 22,
+      "title": "Unit 22",
+      "exercises": [
+        {
+          "id": "22-1",
+          "number": 1,
+          "title": "زمان ما 22",
+          "audio": "audio/zaman-ma-22.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    },
+    {
+      "unit": 23,
+      "title": "Unit 23",
+      "exercises": [
+        {
+          "id": "23-1",
+          "number": 1,
+          "title": "زمان ما 23",
+          "audio": "audio/zaman-ma-23.mp3",
+          "drive": "",
+          "transcript": ""
+        }
+      ]
+    }
+  ]
+}
