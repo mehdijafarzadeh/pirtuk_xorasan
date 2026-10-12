@@ -20,33 +20,11 @@
     const box = document.getElementById("exercise");
     const id = new URLSearchParams(location.search).get("id");
 
-    // Build the player. Order of attempts:
-    //   1. Google Drive file played in the normal audio player ("drive" field)
-    //   2. if that fails: the local file ("audio" field), if there is one
-    //   3. if there is no local file: Google Drive's own embedded player
     function buildPlayer(ex) {
       const holder = el("div", { class: "player" });
-      const audio = el("audio", { controls: "", preload: "metadata" });
-      const fileId = driveId(ex.drive);
-      const sources = [];
-      if (fileId) sources.push(driveStreamUrl(fileId));
-      if (ex.audio) sources.push(ex.audio);
-
-      let i = 0;
-      audio.src = sources[0] || "";
+      const audio = el("audio", { controls: "", preload: "metadata", src: ex.audio || "" });
       audio.addEventListener("error", () => {
-        i++;
-        if (i < sources.length) {
-          audio.src = sources[i];
-        } else if (fileId) {
-          // Last resort: Google's embedded player always works for shared files.
-          holder.replaceChildren(el("iframe", {
-            class: "drive-frame", src: drivePreviewUrl(fileId),
-            title: "Audio player", allow: "autoplay"
-          }));
-        } else {
-          holder.replaceChildren(el("p", { class: "notice", text: "This audio file could not be loaded." }));
-        }
+        holder.replaceChildren(el("p", { class: "notice", text: "This audio file could not be loaded." }));
       });
 
       holder.append(audio, speedControls(audio));
@@ -91,11 +69,6 @@
           el("div", { class: "transcript-text", dir: "auto", text: ex.transcript })));
       }
 
-      const fileId = driveId(ex.drive);
-      if (fileId) {
-        parts.push(el("p", { class: "small-link" },
-          el("a", { href: driveViewUrl(fileId), target: "_blank", rel: "noopener", text: "Open in Google Drive" })));
-      }
 
       const nav = el("nav", { class: "prev-next" });
       const prev = list[pos - 1], next = list[pos + 1];

@@ -18,21 +18,6 @@ function allExercises(data) {
   return list;
 }
 
-// Accepts any Google Drive share link (or a bare file ID) and returns the file ID.
-//   https://drive.google.com/file/d/FILE_ID/view?usp=sharing
-//   https://drive.google.com/open?id=FILE_ID
-//   FILE_ID
-function driveId(link) {
-  if (!link) return "";
-  const m = link.match(/\/d\/([\w-]{10,})/) || link.match(/[?&]id=([\w-]{10,})/);
-  if (m) return m[1];
-  return /^[\w-]{10,}$/.test(link.trim()) ? link.trim() : "";
-}
-
-const driveStreamUrl = (id) => `https://drive.google.com/uc?export=download&id=${id}`;
-const drivePreviewUrl = (id) => `https://drive.google.com/file/d/${id}/preview`;
-const driveViewUrl = (id) => `https://drive.google.com/file/d/${id}/view`;
-
 // The permanent, shareable address of one exercise (used for QR codes).
 function exerciseUrl(id) {
   return new URL("listen.html?id=" + encodeURIComponent(id), location.href).href;
