@@ -77,7 +77,6 @@ button.active { background: var(--accent-soft); border-color: var(--accent); col
 .prev-next a { padding: 10px 0; }
 
 .notice { color: var(--muted); }
-.site-footer { padding: 24px 16px 40px; font-size: .9rem; }
 
 /* QR page */
 .qr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }

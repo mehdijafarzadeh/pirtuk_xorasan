@@ -4,7 +4,7 @@ A free audio website for the textbook's listening exercises. GitHub Pages hosts 
 
 - `index.html`: list of all exercises, grouped by unit
 - `listen.html?id=…`: the page for one exercise, with a player, slower speeds, "back 5 s", an optional transcript and previous/next links
-- `qr.html`: printable QR codes for every exercise
+- `qr.html`: printable QR codes for every exercise (for you only: not linked from the site)
 - `data/exercises.json`: **the only file you edit to change the content**
 - `audio/`: the MP3 recordings
 
