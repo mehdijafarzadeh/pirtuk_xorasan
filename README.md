@@ -21,9 +21,9 @@ A free audio website for the textbook's listening exercises. GitHub Pages hosts 
         {
           "id": "1-1",
           "number": 1,
-          "title": "زمان ما 1",
+          "title": "Zimanê Me 1",
           "instructions": "Listen and repeat.",
-          "audio": "audio/zaman-ma-01.mp3",
+          "audio": "audio/zimane-me-01.mp3",
           "transcript": "First line\nSecond line"
         }
       ]
