@@ -3,20 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1e40af">
   <title>Pirtûk Xorasan — Audio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="site-header">
+  <header class="hero">
     <div class="wrap">
+      <span class="hero-badge" id="badge">Listening exercises</span>
       <h1 data-site-title>Audio</h1>
-      <p class="subtitle" data-site-subtitle></p>
+      <p data-site-subtitle></p>
     </div>
   </header>
 
   <main class="wrap">
-    <input id="search" class="search" type="search" placeholder="Search exercises…" aria-label="Search exercises">
-    <div id="units"><p class="notice">Loading…</p></div>
+    <label class="search">
+      <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+      <input id="search" type="search" placeholder="Search exercises" aria-label="Search exercises" autocomplete="off">
+    </label>
+    <div id="units" class="unit-list"><p class="notice">Loading…</p></div>
   </main>
 
   <script src="js/app.js"></script>
@@ -32,16 +40,18 @@
           !q || `${unit.title} ${ex.title} ${ex.id}`.toLowerCase().includes(q));
         if (!matches.length) continue;
 
-        const list = el("ol", { class: "exercise-list" });
+        const list = el("ul", { class: "exercise-list" });
         for (const ex of matches) {
           list.append(el("li", {},
-            el("a", { href: "listen.html?id=" + encodeURIComponent(ex.id) },
-              el("span", { class: "ex-num", text: `${unit.unit}.${ex.number}` }),
-              el("span", { class: "ex-title", dir: "auto", text: ex.title }),
-              el("span", { class: "ex-play", "aria-hidden": "true", text: "▶" }))));
+            el("a", { class: "ex-row", href: "listen.html?id=" + encodeURIComponent(ex.id) },
+              el("span", { class: "ex-text" },
+                el("span", { class: "ex-title", dir: "auto", text: ex.title }),
+                el("span", { class: "ex-sub", text: `Exercise ${ex.number}` })),
+              el("span", { class: "play-dot" }, icon("play")))));
         }
-        out.push(el("section", { class: "unit" },
-          el("h2", { dir: "auto", text: unit.title }), list));
+        out.push(el("section", { class: "unit-card" },
+          el("div", { class: "unit-badge", text: unit.unit }),
+          el("div", {}, el("h2", { dir: "auto", text: unit.title }), list)));
       }
       unitsBox.replaceChildren(...(out.length ? out : [el("p", { class: "notice", text: "No exercises found." })]));
     }
@@ -49,6 +59,9 @@
     loadData()
       .then((data) => {
         setSiteTitle(data);
+        const n = allExercises(data).length;
+        const badge = document.getElementById("badge");
+        badge.replaceChildren(icon("headphones"), `${n} listening exercises · ${data.units.length} units`);
         render(data, "");
         search.addEventListener("input", () => render(data, search.value));
       })

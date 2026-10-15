@@ -3,39 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QR codes</title>
   <meta name="robots" content="noindex, nofollow">
+  <title>QR codes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
-  <header class="site-header small no-print">
-    <div class="wrap">QR codes (this page is not linked from the site)</div>
-  </header>
-
   <main class="wrap wide">
-    <h1 class="no-print">QR codes for the printed book</h1>
-    <p class="no-print">Each code opens one exercise. Right-click a code (or long-press on a phone) to save it,
-      click “Download PNG”, or print this page.
-      <button type="button" onclick="print()">Print</button></p>
+    <div class="qr-head no-print">
+      <div>
+        <h1>QR codes</h1>
+        <p>For the printed book. Each code opens one exercise. This page is not linked from the site.</p>
+      </div>
+      <button type="button" class="btn-primary" id="print">Print all</button>
+    </div>
     <div id="codes" class="qr-grid"><p class="notice">Loading…</p></div>
   </main>
 
   <script src="js/app.js"></script>
   <script>
     const box = document.getElementById("codes");
+    const printBtn = document.getElementById("print");
+    printBtn.prepend(icon("print"));
+    printBtn.onclick = () => print();
+
     loadData().then((data) => {
       box.replaceChildren();
       for (const ex of allExercises(data)) {
         const url = exerciseUrl(ex.id);
         const code = el("div", { class: "qr" });
-        const download = el("a", { class: "no-print", download: `qr-${ex.id}.png`, href: "#", text: "Download PNG" });
+        const download = el("a", { class: "dl no-print", download: `qr-${ex.id}.png`, href: "#" }, icon("download"), "Download PNG");
         box.append(el("figure", { class: "qr-card" }, code,
           el("figcaption", {},
-            el("strong", { dir: "auto", text: `${ex.unit.unit}.${ex.number} ${ex.title}` }),
+            el("strong", { dir: "auto", text: ex.title }),
+            el("span", { text: `${ex.unit.title} · Exercise ${ex.number}` }),
             el("span", { class: "url", text: url }),
             download)));
-        new QRCode(code, { text: url, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M });
+        new QRCode(code, { text: url, width: 168, height: 168, colorDark: "#0f172a", correctLevel: QRCode.CorrectLevel.M });
         download.addEventListener("click", () => {
           const canvas = code.querySelector("canvas");
           if (canvas) download.href = canvas.toDataURL("image/png");

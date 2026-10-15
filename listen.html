@@ -3,13 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1e40af">
   <title>Listening exercise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="site-header small">
+  <header class="topbar">
     <div class="wrap">
-      <a class="back" href="index.html">← <span data-site-title>All exercises</span></a>
+      <a class="back" href="index.html" id="back"><span data-site-title>All exercises</span></a>
+      <span class="pill" id="pos"></span>
     </div>
   </header>
 
@@ -19,66 +24,132 @@
   <script>
     const box = document.getElementById("exercise");
     const id = new URLSearchParams(location.search).get("id");
+    const exHref = (ex) => "listen.html?id=" + encodeURIComponent(ex.id);
 
-    function buildPlayer(ex) {
-      const holder = el("div", { class: "player" });
-      const audio = el("audio", { controls: "", preload: "metadata", src: ex.audio || "" });
-      audio.addEventListener("error", () => {
-        holder.replaceChildren(el("p", { class: "notice", text: "This audio file could not be loaded." }));
-      });
+    // A custom audio player: big play button, seek bar, back 5 s, speed and repeat.
+    function buildPlayer(ex, prev, next) {
+      const player = el("div", { class: "player" });
+      const audio = el("audio", { preload: "metadata", src: ex.audio || "" });
 
-      holder.append(audio, speedControls(audio));
-      return holder;
-    }
+      const playBtn = el("button", { type: "button", class: "play-btn", "aria-label": "Play" }, icon("play", "icon play"));
+      const seek = el("input", { type: "range", class: "seek", min: "0", max: "0", step: "any", value: "0", "aria-label": "Position" });
+      const cur = el("span", { text: "0:00" });
+      const dur = el("span", { text: "--:--" });
 
-    // Slower playback and a "back 5 seconds" button help language learners.
-    function speedControls(audio) {
-      const bar = el("div", { class: "controls" });
-      const back = el("button", { type: "button", text: "↺ 5 s", "aria-label": "Back 5 seconds" });
-      back.onclick = () => (audio.currentTime = Math.max(0, audio.currentTime - 5));
-      bar.append(back);
+      const back = el("button", { type: "button", class: "tool", "aria-label": "Back 5 seconds" },
+        icon("back5"), el("span", { text: "5 s" }));
+      const loop = el("button", { type: "button", class: "tool", "aria-pressed": "false", "aria-label": "Repeat" },
+        icon("repeat"), el("span", { class: "label", text: "Repeat" }));
+      const speed = el("div", { class: "speed", role: "group", "aria-label": "Playback speed" });
       for (const rate of [0.75, 1, 1.25]) {
-        const b = el("button", { type: "button", class: rate === 1 ? "active" : "", text: rate + "×" });
+        const b = el("button", { type: "button", "aria-pressed": String(rate === 1), text: rate + "×" });
         b.onclick = () => {
           audio.playbackRate = rate;
-          bar.querySelectorAll(".active").forEach((x) => x.classList.remove("active"));
-          b.classList.add("active");
+          speed.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
         };
-        bar.append(b);
+        speed.append(b);
       }
-      return bar;
+
+      player.append(audio,
+        el("div", { class: "player-main" }, playBtn,
+          el("div", { class: "timeline" }, seek, el("div", { class: "times" }, cur, dur))),
+        el("div", { class: "player-tools" }, back, speed, loop));
+
+      // --- behaviour ---
+      const toggle = () => (audio.paused ? audio.play() : audio.pause());
+      playBtn.onclick = toggle;
+      back.onclick = () => (audio.currentTime = Math.max(0, audio.currentTime - 5));
+      loop.onclick = () => {
+        audio.loop = !audio.loop;
+        loop.setAttribute("aria-pressed", String(audio.loop));
+      };
+
+      let dragging = false;
+      const paint = () => {
+        const d = audio.duration || 0;
+        seek.style.setProperty("--p", d ? (seek.value / d) * 100 + "%" : "0%");
+      };
+      seek.addEventListener("pointerdown", () => (dragging = true));
+      seek.addEventListener("input", () => { cur.textContent = formatTime(+seek.value); paint(); });
+      seek.addEventListener("change", () => { audio.currentTime = +seek.value; dragging = false; });
+
+      audio.addEventListener("loadedmetadata", () => {
+        seek.max = audio.duration;
+        dur.textContent = formatTime(audio.duration);
+      });
+      audio.addEventListener("timeupdate", () => {
+        if (dragging) return;
+        seek.value = audio.currentTime;
+        cur.textContent = formatTime(audio.currentTime);
+        paint();
+      });
+      const setPlaying = (on) => {
+        playBtn.replaceChildren(icon(on ? "pause" : "play", on ? "icon" : "icon play"));
+        playBtn.setAttribute("aria-label", on ? "Pause" : "Play");
+      };
+      audio.addEventListener("play", () => setPlaying(true));
+      audio.addEventListener("pause", () => setPlaying(false));
+      audio.addEventListener("waiting", () => player.classList.add("loading"));
+      audio.addEventListener("playing", () => player.classList.remove("loading"));
+      audio.addEventListener("error", () => {
+        player.replaceChildren(el("p", { class: "player-error", text: "This audio file could not be loaded." }));
+      });
+
+      // Keyboard: space = play/pause, arrows = ±5 s
+      document.addEventListener("keydown", (e) => {
+        if (e.target.closest("input, button, a, summary")) return;
+        if (e.code === "Space") { e.preventDefault(); toggle(); }
+        if (e.code === "ArrowLeft") audio.currentTime = Math.max(0, audio.currentTime - 5);
+        if (e.code === "ArrowRight") audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5);
+      });
+
+      // Lock-screen / headphone controls on phones
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: ex.title, artist: ex.unit.title, album: document.querySelector("[data-site-title]").textContent,
+        });
+        navigator.mediaSession.setActionHandler("seekbackward", () => back.onclick());
+        if (prev) navigator.mediaSession.setActionHandler("previoustrack", () => (location.href = exHref(prev)));
+        if (next) navigator.mediaSession.setActionHandler("nexttrack", () => (location.href = exHref(next)));
+      }
+      return player;
+    }
+
+    function navCard(ex, dir) {
+      if (!ex) return null;
+      const text = el("span", {},
+        el("small", { text: dir === "next" ? "Next" : "Previous" }),
+        el("strong", { dir: "auto", text: ex.title }));
+      return dir === "next"
+        ? el("a", { class: "nav-card next", href: exHref(ex) }, text, icon("right"))
+        : el("a", { class: "nav-card", href: exHref(ex) }, icon("left"), text);
     }
 
     function render(data) {
       const list = allExercises(data);
       const pos = list.findIndex((ex) => ex.id === id);
       if (pos < 0) return showError(box, `Exercise "${id ?? ""}" was not found.`);
-      const ex = list[pos];
-      document.title = `${ex.unit.unit}.${ex.number} ${ex.title}`;
+      const ex = list[pos], prev = list[pos - 1], next = list[pos + 1];
+      document.title = `${ex.title} · ${ex.unit.title}`;
+      document.getElementById("pos").textContent = `${pos + 1} / ${list.length}`;
 
-      const parts = [
+      const card = el("article", { class: "ex-card" },
         el("p", { class: "eyebrow", dir: "auto", text: `${ex.unit.title} · Exercise ${ex.number}` }),
         el("h1", { dir: "auto", text: ex.title }),
-      ];
-      if (ex.instructions) parts.push(el("p", { class: "instructions", dir: "auto", text: ex.instructions }));
-      parts.push(buildPlayer(ex));
+        ex.instructions ? el("p", { class: "instructions", dir: "auto", text: ex.instructions }) : null,
+        buildPlayer(ex, prev, next));
 
-      if (ex.transcript) {
-        parts.push(el("details", { class: "transcript" },
-          el("summary", { text: "Show transcript" }),
-          el("div", { class: "transcript-text", dir: "auto", text: ex.transcript })));
-      }
+      const transcript = ex.transcript
+        ? el("details", { class: "transcript" },
+            el("summary", {}, icon("text"), "Transcript"),
+            el("div", { class: "transcript-text", dir: "auto", text: ex.transcript }))
+        : null;
 
-
-      const nav = el("nav", { class: "prev-next" });
-      const prev = list[pos - 1], next = list[pos + 1];
-      nav.append(prev ? el("a", { href: "listen.html?id=" + encodeURIComponent(prev.id), text: "← Previous" }) : el("span"));
-      nav.append(next ? el("a", { href: "listen.html?id=" + encodeURIComponent(next.id), text: "Next →" }) : el("span"));
-      parts.push(nav);
-
-      box.replaceChildren(...parts);
+      const nav = el("nav", { class: "prev-next", "aria-label": "Other exercises" }, navCard(prev, "prev"), navCard(next, "next"));
+      box.replaceChildren(...[card, transcript, nav].filter(Boolean));
     }
 
+    document.getElementById("back").prepend(icon("left"));
     loadData()
       .then((data) => { setSiteTitle(data); render(data); })
       .catch((err) => showError(box, err.message));
